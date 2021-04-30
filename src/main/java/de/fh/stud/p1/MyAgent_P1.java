@@ -19,9 +19,11 @@ public class MyAgent_P1 extends PacmanAgent_2021 {
 	 * Die als nächstes auszuführende Aktion
 	 */
 	private PacmanAction nextAction;
+	private PacmanController pacmanController;
 	
 	public MyAgent_P1(String name) {
 		super(name);
+		pacmanController = new PacmanController();
 	}
 	
 	public static void main(String[] args) {
@@ -35,19 +37,16 @@ public class MyAgent_P1 extends PacmanAgent_2021 {
 	 */
 	@Override
 	public PacmanAction action(PacmanPercept percept, PacmanActionEffect actionEffect) {
-		
-		//Gebe den aktuellen Zustand der Welt auf der Konsole aus
-		Util.printView(percept.getView());
-		
+		// Util.printView(percept.getView());
+
 		//Nachdem das Spiel gestartet wurde, geht der Agent nach Osten
 		if(actionEffect == PacmanActionEffect.GAME_INITIALIZED) {
 			nextAction = PacmanAction.GO_EAST;
 		}
-		
-		/*
-		 * TODO Praktikum 1: Erweitert diese action-Methode gemäß der Aufgabenstellung.
-		 */
-		
+		if(actionEffect == PacmanActionEffect.BUMPED_INTO_WALL) {
+			nextAction = PacmanAction.GO_NORTH;
+		}
+
 		return nextAction;
 	}
 

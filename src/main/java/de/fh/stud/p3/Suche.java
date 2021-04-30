@@ -1,6 +1,6 @@
 package de.fh.stud.p3;
 
-import de.fh.stud.p2.Knoten;
+import de.fh.stud.p2.Node;
 
 public class Suche {
 	
@@ -15,7 +15,7 @@ public class Suche {
 	 * zu unterstützen.
 	 */
 	
-	public Knoten start() {
+	public Node start() {
 		/*
 		 * TODO Praktikum 3 [2]: Implementieren Sie hier den Algorithmus einer Tiefensuche.
 		 */
