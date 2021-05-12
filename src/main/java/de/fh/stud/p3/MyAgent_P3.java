@@ -56,17 +56,43 @@ public class MyAgent_P3 extends PacmanAgent_2021 {
 		
 		//Wenn die Suche eine Lösung gefunden hat, dann ermittle die als nächstes auszuführende Aktion
 		if (loesungsNode != null) {
-			/*
-			 * TODO Praktikum 3 [4]: Ermittelt hier die als naechstes auszufuehrende Aktion,
-			 * basierend auf dem loesungsknoten und weist diese nextAction zu.
-			 */
-			
+
+			Node nextNode = loesungsNode.getWalkedPath().get(0);
+			loesungsNode.getWalkedPath().remove(0);
+
+			Coordinates currentCoordinates = new Coordinates(percept.getPosX(), percept.getPosY());
+			Coordinates desiredCoordinates =nextNode.getPacPos();
+
+			nextAction = coordinatesToAction(currentCoordinates, desiredCoordinates);
+
 		} else {
 			//Ansonsten wurde keine Lösung gefunden und der Pacman kann das Spiel aufgeben
 			nextAction = PacmanAction.QUIT_GAME;
 		}
 		
 		return nextAction;
+	}
+
+	private PacmanAction coordinatesToAction (Coordinates nowCoords, Coordinates goalCoords) {
+
+		PacmanAction returnAction;
+
+		switch (nowCoords.getPosX() - goalCoords.getPosX()) {
+
+			case 1 : returnAction = PacmanAction.GO_WEST; break;
+			case -1: returnAction = PacmanAction.GO_EAST; break;
+			default:
+				switch (nowCoords.getPosY() - goalCoords.getPosY()) {
+
+					case 1 : returnAction = PacmanAction.GO_NORTH; break;
+					case -1: returnAction = PacmanAction.GO_SOUTH; break;
+					default: returnAction = PacmanAction.QUIT_GAME;
+				}
+		}
+
+
+
+		return returnAction;
 	}
 
 	@Override

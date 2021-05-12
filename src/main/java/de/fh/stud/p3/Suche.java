@@ -1,25 +1,108 @@
 package de.fh.stud.p3;
 
-import de.fh.stud.p2.Node;
+import de.fh.kiServer.util.Util;
+import de.fh.pacman.enums.PacmanTileType;
 
-public class Suche {
-	
-	/*
-	 * TODO Praktikum 3 [1]: Erweitern Sie diese Klasse um die notwendigen
-	 * Attribute und Methoden um eine Tiefensuche durchführen zu können.
-	 * Die Erweiterung um weitere Suchstrategien folgt in Praktikum 4.
-	 */
-	
-	/*
-	 * TODO Praktikum 4 [1]: Erweitern Sie diese Klasse um weitere Suchstrategien (siehe Aufgabenblatt)
-	 * zu unterstützen.
-	 */
-	
-	public Node start() {
-		/*
-		 * TODO Praktikum 3 [2]: Implementieren Sie hier den Algorithmus einer Tiefensuche.
-		 */
-		return null;
-	}
-	
+import java.util.ArrayList;
+import java.util.PriorityQueue;
+
+public class Suche
+{
+
+    PriorityQueue<Node> queue;
+
+    /*
+     * TODO Praktikum 4 [1]: Erweitern Sie diese Klasse um weitere Suchstrategien (siehe Aufgabenblatt)
+     * zu unterstützen.
+     */
+
+    public Suche(Node startNode)
+    {
+
+        this.queue = new PriorityQueue<>();
+        this.queue.add(startNode);
+    }
+
+    public Node start() throws Exception
+    {
+
+        Node currentNode;
+        Node finalNode = null;
+
+        boolean firstNode = true;
+
+        while (queue.peek() != null && finalNode == null)
+        {
+
+            currentNode = queue.poll();
+            assert currentNode != null;
+
+            if(firstNode) {
+
+                currentNode.addToWalkedPath(currentNode);
+                firstNode = false;
+            }
+
+            expandNodeWithDeepSearchPriority(currentNode);
+
+             if(isFinalState(currentNode))
+                 finalNode = currentNode;
+        }
+
+        return finalNode;
+    }
+
+    public void expandNodeWithDeepSearchPriority(Node nodeToExpand) throws Exception
+    {
+        ArrayList<Node> expandedNodes = new ArrayList<>(nodeToExpand.expand());
+
+        removeNodeIfCycle(expandedNodes);
+
+        for (Node expandedNode : expandedNodes)
+        {
+            expandedNode.addToWalkedPath(expandedNode);
+
+            expandedNode.setPriority(nodeToExpand.getPriority() - 1);
+        }
+
+        queue.addAll(expandedNodes);
+    }
+
+    public void expandNodeWithWidthSearchPriority(Node nodeToExpand) throws Exception
+    {
+        ArrayList<Node> expandedNodes = new ArrayList<>(nodeToExpand.expand());
+
+        removeNodeIfCycle(expandedNodes);
+
+        for (Node expandedNode : expandedNodes)
+        {
+            expandedNode.addToWalkedPath(expandedNode);
+
+            expandedNode.setPriority(nodeToExpand.getPriority() + 1);
+        }
+
+        queue.addAll(expandedNodes);
+    }
+
+    private void removeNodeIfCycle(ArrayList<Node> expandedNodes) {
+
+        expandedNodes.removeIf(node -> node.getWalkedPath().contains(node));
+    }
+
+    private boolean isFinalState(Node node)
+    {
+
+        PacmanTileType[][] world = node.getCurrentWorld();
+
+        for (PacmanTileType[] x : world)
+        {
+            for (PacmanTileType y : x)
+            {
+                if (y == PacmanTileType.DOT)
+                    return false;
+            }
+        }
+
+        return true;
+    }
 }
