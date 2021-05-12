@@ -8,20 +8,12 @@ import de.fh.pacman.PacmanPercept;
 import de.fh.pacman.PacmanStartInfo;
 import de.fh.pacman.enums.PacmanAction;
 import de.fh.pacman.enums.PacmanActionEffect;
-import de.fh.stud.p2.Node;
 
 public class MyAgent_P3 extends PacmanAgent_2021 {
 
-	/**
-	 * Die als nächstes auszuführende Aktion
-	 */
 	private PacmanAction nextAction;
-	
-	/**
-	 * Der gefundene Lösungknoten der Suche
-	 */
 	private Node loesungsNode;
-	
+
 	public MyAgent_P3(String name) {
 		super(name);
 	}
@@ -37,21 +29,24 @@ public class MyAgent_P3 extends PacmanAgent_2021 {
 	 */
 	@Override
 	public PacmanAction action(PacmanPercept percept, PacmanActionEffect actionEffect) {
-		
+
 		//Gebe den aktuellen Zustand der Welt auf der Konsole aus
 		Util.printView(percept.getView());
 		
 		//Wenn noch keine Lösung gefunden wurde, dann starte die Suche
 		if (loesungsNode == null) {
 			/*
-			 * TODO Praktikum 3 [3]: Übergebt hier der Suche die notwendigen Informationen, um
-			 * von einem Startzustand zu einem Zielzustand zu gelangen.
-			 */
-			/*
 			 * TODO Praktikum 4 [2]: Entscheidet hier welches Suchverfahren ausgeführt werden soll.
 			 */
-			Suche suche = new Suche();
-			loesungsNode = suche.start();
+			Suche suche = new Suche(new Node(percept.getView(), new Coordinates(percept.getPosX(), percept.getPosY())));
+			try
+			{
+				loesungsNode = suche.start();
+				loesungsNode.getWalkedPath().remove(0);
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}
 		}
 		
 		//Wenn die Suche eine Lösung gefunden hat, dann ermittle die als nächstes auszuführende Aktion
@@ -97,12 +92,12 @@ public class MyAgent_P3 extends PacmanAgent_2021 {
 
 	@Override
 	protected void onGameStart(PacmanStartInfo startInfo) {
-		
+		System.out.println("Game started!");
 	}
 
 	@Override
 	protected void onGameover(PacmanGameResult gameResult) {
-		
+		System.out.println("Game over!");
 	}
 	
 }
