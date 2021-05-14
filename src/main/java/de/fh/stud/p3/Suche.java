@@ -1,6 +1,5 @@
 package de.fh.stud.p3;
 
-import de.fh.kiServer.util.Util;
 import de.fh.pacman.enums.PacmanTileType;
 
 import java.util.ArrayList;
@@ -142,7 +141,7 @@ public class Suche
         return counter;
     }
 
-    private void removeNodeIfCycle(ArrayList<Node> expandedNodes) {
+    protected void removeNodeIfCycle(ArrayList<Node> expandedNodes) {
 
         expandedNodes.removeIf(node -> node.getWalkedPath().contains(node));
     }
@@ -164,7 +163,7 @@ public class Suche
         }
     }
 
-    private boolean isFinalState(Node node)
+    protected boolean isFinalState(Node node)
     {
 
         PacmanTileType[][] world = node.getCurrentWorld();
