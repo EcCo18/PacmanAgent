@@ -35,14 +35,36 @@ public class MyAgent_P3 extends PacmanAgent_2021 {
 		
 		//Wenn noch keine Lösung gefunden wurde, dann starte die Suche
 		if (loesungsNode == null) {
-			/*
-			 * TODO Praktikum 4 [2]: Entscheidet hier welches Suchverfahren ausgeführt werden soll.
-			 */
-			Suche suche = new Suche(new Node(percept.getView(), new Coordinates(percept.getPosX(), percept.getPosY())));
+
+			Suche deep = new Suche(new Node(percept.getView(), new Coordinates(percept.getPosX(), percept.getPosY())), "deep");
+			Suche width = new Suche(new Node(percept.getView(), new Coordinates(percept.getPosX(), percept.getPosY())), "width");
+			Suche greedy = new Suche(new Node(percept.getView(), new Coordinates(percept.getPosX(), percept.getPosY())), "greedy");
+			Suche ucs = new Suche(new Node(percept.getView(), new Coordinates(percept.getPosX(), percept.getPosY())), "ucs");
+			Suche aStar = new Suche(new Node(percept.getView(), new Coordinates(percept.getPosX(), percept.getPosY())), "as");
+
+			/*try
+			{
+				loesungsNode = deep.start();
+				loesungsNode.getWalkedPath().remove(0);
+			} catch (Exception e)
+			{
+				e.printStackTrace();
+			}*/
+
+			//Effiziente Abarbeitung der Tabellde
+
 			try
 			{
-				loesungsNode = suche.start();
-				loesungsNode.getWalkedPath().remove(0);
+				System.out.println("Deep ---");
+				loesungsNode = deep.start();
+				System.out.println("Width ---");
+				loesungsNode = width.start();
+				System.out.println("Greedy ---");
+				loesungsNode = greedy.start();
+				System.out.println("UCS ---");
+				loesungsNode = ucs.start();
+				System.out.println("A-Stern ---");
+				loesungsNode = aStar.start();
 			} catch (Exception e)
 			{
 				e.printStackTrace();

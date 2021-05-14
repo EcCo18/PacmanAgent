@@ -55,7 +55,7 @@ public class Node implements Comparable<Node>
             calculatedWorld[pacPos.getPosX()][pacPos.getPosY()] = PacmanTileType.EMPTY;
             calculatedWorld[newCoordinates.getPosX()][newCoordinates.getPosY()] = PacmanTileType.PACMAN;
         }
-        Node newNode = new Node(calculatedWorld, newCoordinates);
+        Node newNode = new Node(calculatedWorld, newCoordinates, this.priority);
         newNode.setWalkedPath(this.walkedPath);
 
         return newNode;
