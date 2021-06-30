@@ -15,7 +15,6 @@ public class Suche
 
     public Suche(Node startNode, String search)
     {
-
         this.queue = new PriorityQueue<>();
         this.queue.add(startNode);
         this.search = search;

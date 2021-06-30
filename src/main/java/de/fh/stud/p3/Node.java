@@ -127,9 +127,14 @@ public class Node implements Comparable<Node>
         }
     }
 
-    public Node cloneNode()
-    {
-        return new Node(this.copyCurrentWorld(), new Coordinates(this.pacPos.getPosX(), this.pacPos.getPosY()));
+    public int getRemainingDots() {
+
+        return remainingDots;
+    }
+
+    public void setRemainingDots(int remainingDots) {
+
+        this.remainingDots = remainingDots;
     }
 
     @Override
