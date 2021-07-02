@@ -26,4 +26,17 @@ public class GhostBusterClass {
 
         return reportList;
     }
+
+    protected PacmanTileType[][] createWorldSnapshot() {
+
+        int xLength;
+        int xLengthLeft;
+        int xLengthRight;
+
+        if((currentWorld.length-1) - pacman.getCurrentCoordinates().getPosX() > 2) {
+
+        }
+        return null;
+    }
+
 }

@@ -10,27 +10,37 @@ import de.fh.stud.finalPacman.pacman.Pacman;
 
 import java.util.ArrayList;
 import java.util.PriorityQueue;
+import java.util.Stack;
 
 public abstract class Search {
 
     private PacmanTileType[][] currentWorld;
     private final boolean [][] wallMap;
     private Pacman pacman;
+    private Stack<PacmanAction> savedMoves;
+
 
     public Search(PacmanTileType[][] currentWorld, Pacman pacman) {
 
         this.pacman = pacman;
         this.currentWorld = currentWorld;
         wallMap = buildWallMap(currentWorld);
+        this.savedMoves = null;
     }
+
+    public abstract void calculateNextSteps(Coordinates coordinates) throws NotFoundException;
 
     /**
      * finds next step for reaching target.
-     *
-     * @param coordinates
      * @return PacmanAction
      */
-    public abstract PacmanAction findNextStepTo(Coordinates coordinates) throws NotFoundException;
+    public PacmanAction getNextMove() throws NotFoundException {
+
+        if (savedMoves == null)
+            throw new NotFoundException();
+
+        return savedMoves.pop();
+    }
 
     public Coordinates find(PacmanTileType tileType) throws NotFoundException {
 
@@ -138,10 +148,17 @@ public abstract class Search {
     }
 
     public PacmanTileType[][] getCurrentWorld() { return currentWorld; }
-
     public void setCurrentWorld(PacmanTileType[][] currentWorld) { this.currentWorld = currentWorld; }
 
     public boolean[][] getWallMap() { return wallMap; }
 
     public Pacman getPacman () { return this.pacman; }
+
+
+    public Stack<PacmanAction> getSavedMoves() {
+        return savedMoves;
+    }
+    public void setSavedMoves(Stack<PacmanAction> savedMoves) {
+        this.savedMoves = savedMoves;
+    }
 }

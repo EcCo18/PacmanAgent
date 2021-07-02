@@ -16,7 +16,7 @@ public class GhostReport {
         this.distanceToGhost = calculateDistanceToGhost(pacmanCoordinates, ghostCoordinates);
     }
 
-    protected double calculateDistanceToGhost(Coordinates pacmanCoordinates,
+    private double calculateDistanceToGhost(Coordinates pacmanCoordinates,
                                                       Coordinates ghostCoordinates) {
 
         return Math.sqrt(Math.pow(pacmanCoordinates.getPosX() - ghostCoordinates.getPosX(), 2) +
@@ -29,5 +29,9 @@ public class GhostReport {
 
     public Coordinates getGhostCoordinates() {
         return ghostCoordinates;
+    }
+
+    public Coordinates getPacmanCoordinates() {
+        return pacmanCoordinates;
     }
 }

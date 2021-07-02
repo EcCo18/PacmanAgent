@@ -15,21 +15,15 @@ import java.util.Stack;
 
 public class AStarSearch extends Search {
 
-    private Stack<PacmanAction> savedMoves;
-
     public AStarSearch(PacmanTileType[][] currentWorld, Pacman pacman) {
 
         super(currentWorld, pacman);
-        this.savedMoves = null;
     }
 
     @Override
-    public PacmanAction findNextStepTo(Coordinates coordinates) throws NotFoundException {
+    public void calculateNextSteps(Coordinates coordinates) throws NotFoundException {
 
-        if(savedMoves == null)
-            savedMoves = findPathTo(coordinates);
-
-        return savedMoves.pop();
+        super.setSavedMoves(findPathTo(coordinates));
     }
 
     public Stack<PacmanAction> findPathTo (Coordinates coordinates) throws NotFoundException {
@@ -53,6 +47,7 @@ public class AStarSearch extends Search {
                 for(Coordinates coords : super.getNextCoordinates(currentCoordinates)) {
 
                     coords.setDistance(distanceToGoal(coords, coordinates));
+                    openList.add(coords);
                 }
             }
         }

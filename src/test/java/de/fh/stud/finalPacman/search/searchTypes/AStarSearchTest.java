@@ -2,6 +2,7 @@ package de.fh.stud.finalPacman.search.searchTypes;
 
 import de.fh.pacman.enums.PacmanTileType;
 import de.fh.stud.finalPacman.Coordinates;
+import de.fh.stud.finalPacman.exceptions.NotFoundException;
 import de.fh.stud.finalPacman.pacman.Pacman;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -82,5 +83,13 @@ class AStarSearchTest {
                 Math.pow(coordinatesStart.getPosX() - coordinatesDestination.getPosX(), 2));
 
         assertEquals(expectedRes, aStarSearch.distanceToGoal(coordinatesStart, coordinatesDestination));
+    }
+
+    @Test
+    public void shouldThrowNotFoundException() {
+
+        Coordinates coordinatesDestination = new Coordinates(0, 0);
+
+        assertThrows(NotFoundException.class, () -> aStarSearch.findPathTo(coordinatesDestination));
     }
 }

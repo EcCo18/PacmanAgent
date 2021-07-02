@@ -22,9 +22,5 @@ public class DeepSearch extends Search {
     }
 
     @Override
-    public PacmanAction findNextStepTo(Coordinates coordinates) {
-
-        return null;
-    }
-
+    public void calculateNextSteps(Coordinates coordinates) { }
 }
