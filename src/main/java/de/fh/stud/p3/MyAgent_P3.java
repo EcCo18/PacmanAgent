@@ -57,11 +57,11 @@ public class MyAgent_P3 extends PacmanAgent_2021 {
 			{
 				System.out.println("Deep ---");
 				loesungsNode = deep.start();
-				System.out.println("Width ---");
+				//System.out.println("Width ---");
 				loesungsNode = width.start();
 				System.out.println("Greedy ---");
 				loesungsNode = greedy.start();
-				System.out.println("UCS ---");
+				//System.out.println("UCS ---");
 				loesungsNode = ucs.start();
 				System.out.println("A-Stern ---");
 				loesungsNode = aStar.start();

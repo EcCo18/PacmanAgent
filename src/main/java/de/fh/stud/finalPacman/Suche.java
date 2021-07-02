@@ -1,8 +1,11 @@
-package de.fh.stud.p3;
+package de.fh.stud.finalPacman;
 
 import de.fh.pacman.enums.PacmanTileType;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.PriorityQueue;
 
 public class Suche
 {
