@@ -30,7 +30,7 @@ public abstract class Search {
      * @param coordinates
      * @return PacmanAction
      */
-    public abstract PacmanAction findNextStepTo(Coordinates coordinates);
+    public abstract PacmanAction findNextStepTo(Coordinates coordinates) throws NotFoundException;
 
     public Coordinates find(PacmanTileType tileType) throws NotFoundException {
 
@@ -102,10 +102,10 @@ public abstract class Search {
 
         switch (pacmanAction) {
 
-            case GO_EAST -> resultCoordinates = new Coordinates(coordinates.getPosX()+1, coordinates.getPosY(), coordinates.getDepth()+1);
-            case GO_WEST -> resultCoordinates = new Coordinates(coordinates.getPosX()-1, coordinates.getPosY(), coordinates.getDepth()+1);
-            case GO_NORTH -> resultCoordinates = new Coordinates(coordinates.getPosX(), coordinates.getPosY()+1, coordinates.getDepth()+1);
-            case GO_SOUTH -> resultCoordinates = new Coordinates(coordinates.getPosX(), coordinates.getPosY()-1, coordinates.getDepth()+1);
+            case GO_EAST -> resultCoordinates = generateNextCoordinates(coordinates.getPosX()+1, coordinates.getPosY(), coordinates, PacmanAction.GO_EAST);
+            case GO_WEST -> resultCoordinates = generateNextCoordinates(coordinates.getPosX()-1, coordinates.getPosY(), coordinates, PacmanAction.GO_WEST);
+            case GO_NORTH -> resultCoordinates = generateNextCoordinates(coordinates.getPosX(), coordinates.getPosY()+1, coordinates, PacmanAction.GO_NORTH);
+            case GO_SOUTH -> resultCoordinates = generateNextCoordinates(coordinates.getPosX(), coordinates.getPosY()-1, coordinates, PacmanAction.GO_SOUTH);
             default -> throw new InvalidCoordinatesException();
         }
 
@@ -115,6 +115,16 @@ public abstract class Search {
         }
 
         return resultCoordinates;
+    }
+
+    protected Coordinates generateNextCoordinates (int posX, int posY, Coordinates coordinates, PacmanAction move) {
+
+        Coordinates newCoordinates = new Coordinates(posX, posY, coordinates.getDepth()+1, coordinates.getDistance());
+
+        newCoordinates.setPreviousCoordinates(coordinates);
+        newCoordinates.setMoveBefore(move);
+
+        return newCoordinates;
     }
 
     protected boolean isWallAt(Coordinates coordinates) {

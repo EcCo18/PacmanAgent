@@ -167,6 +167,15 @@ class SearchTest {
     }
 
     @Test
+    public void shouldThrowInvalidCoordinatesException() {
+
+        Coordinates coordinates = new Coordinates(1, 1);
+        PacmanAction pacmanAction = PacmanAction.GO_WEST;
+
+        assertThrows(InvalidCoordinatesException.class, () -> deepSearch.getCoordinatesAfterMove(coordinates, pacmanAction));
+    }
+
+    @Test
     public void shouldFindWall() {
 
         assertEquals(true, deepSearch.isWallAt(new Coordinates(0, 0)));
