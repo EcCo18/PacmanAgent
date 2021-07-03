@@ -17,7 +17,8 @@ public class DeepSearch extends Search {
 
     public DeepSearch (int maximumDepth, PacmanTileType[][] currentWorld, Pacman pacman) {
 
-        super(currentWorld, pacman);
+        //TODO cordsComparator
+        super(currentWorld, pacman, null);
         this.maximumDepth = maximumDepth;
     }
 

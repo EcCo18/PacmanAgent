@@ -7,10 +7,9 @@ import de.fh.stud.finalPacman.comparators.CompareCoordinatesByDepth;
 import de.fh.stud.finalPacman.exceptions.NotFoundException;
 import de.fh.stud.finalPacman.exceptions.InvalidCoordinatesException;
 import de.fh.stud.finalPacman.pacman.Pacman;
+import de.fh.stud.finalPacman.search.heuristics.DistanceHeuristic;
 
-import java.util.ArrayList;
-import java.util.PriorityQueue;
-import java.util.Stack;
+import java.util.*;
 
 public abstract class Search {
 
@@ -18,18 +17,24 @@ public abstract class Search {
     private final boolean [][] wallMap;
     private Pacman pacman;
     private Stack<PacmanAction> savedMoves;
+    private final Comparator<Coordinates> coordinatesComparator;
+    private final DistanceHeuristic distanceHeuristic;
 
 
-    public Search(PacmanTileType[][] currentWorld, Pacman pacman) {
+    public Search(PacmanTileType[][] currentWorld, Pacman pacman, Comparator<Coordinates> coordinatesComparator) {
 
         this.pacman = pacman;
         this.currentWorld = currentWorld;
         wallMap = buildWallMap(currentWorld);
         this.savedMoves = null;
+        this.coordinatesComparator = coordinatesComparator;
+        this.distanceHeuristic = new DistanceHeuristic();
     }
 
-    public abstract void calculateNextSteps(Coordinates coordinates) throws NotFoundException;
+    public void calculateNextSteps(Coordinates coordinates) throws NotFoundException {
 
+        setSavedMoves(findPathTo(coordinates));
+    }
     /**
      * finds next step for reaching target.
      * @return PacmanAction
@@ -40,6 +45,52 @@ public abstract class Search {
             throw new NotFoundException();
 
         return savedMoves.pop();
+    }
+
+    protected Stack<PacmanAction> fillMovesStack (Coordinates coordinates) {
+
+        Stack<PacmanAction> returnStack = new Stack<>();
+        Coordinates currentCoordinates = coordinates;
+
+        while (coordinates.getPreviousCoordinates() != null) {
+
+            returnStack.push(coordinates.getMoveBefore());
+            currentCoordinates = currentCoordinates.getPreviousCoordinates();
+        }
+
+        return returnStack;
+    }
+
+    public Stack<PacmanAction> findPathTo (Coordinates coordinates) throws NotFoundException {
+
+        PriorityQueue<Coordinates> openList = new PriorityQueue<>(this.coordinatesComparator);
+        HashMap<Integer, Coordinates> closedList = new HashMap<>();
+
+        boolean found = false;
+        Coordinates currentCoordinates = null;
+        openList.add(getPacman().getCurrentCoordinates());
+
+        while (openList.size() > 0 && !found) {
+
+            currentCoordinates = openList.poll();
+            found = currentCoordinates == coordinates;
+
+            if(!closedList.containsValue(currentCoordinates) && !found) {
+
+                closedList.put(currentCoordinates.hashCode(), currentCoordinates);
+
+                for(Coordinates coords : getNextCoordinates(currentCoordinates)) {
+
+                    coords.setDistance(distanceHeuristic.getHeuristicValue(coords, coordinates));
+                    openList.add(coords);
+                }
+            }
+        }
+
+        if(!found || currentCoordinates == null)
+            throw new NotFoundException();
+
+        return fillMovesStack(currentCoordinates);
     }
 
     public Coordinates find(PacmanTileType tileType) throws NotFoundException {
@@ -103,7 +154,10 @@ public abstract class Search {
 
             Coordinates expandedCoords = getCoordinatesAfterMove(coordinates, pacmanAction);
             expandedCoordinates.add(expandedCoords);
-        } catch (InvalidCoordinatesException ignored) { }
+        } catch (InvalidCoordinatesException ignored) {
+
+            System.out.println("Catched InvalidCoordinatesException");
+        }
     }
 
     protected Coordinates getCoordinatesAfterMove (Coordinates coordinates, PacmanAction pacmanAction) throws InvalidCoordinatesException {

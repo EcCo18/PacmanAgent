@@ -4,7 +4,6 @@ import de.fh.pacman.enums.PacmanTileType;
 import de.fh.stud.finalPacman.Coordinates;
 import de.fh.stud.finalPacman.exceptions.NotFoundException;
 import de.fh.stud.finalPacman.pacman.Pacman;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -71,18 +70,6 @@ class AStarSearchTest {
         startWorld[3][2] = PacmanTileType.DOT;
 
         aStarSearch = new AStarSearch(startWorld, pacman);
-    }
-
-    @Test
-    public void shouldCalculateDistanceToGoal() {
-
-        Coordinates coordinatesStart = new Coordinates(1, 1);
-        Coordinates coordinatesDestination = new Coordinates(2, 4);
-
-        double expectedRes = Math.sqrt(Math.pow(coordinatesStart.getPosY() - coordinatesDestination.getPosY(), 2) +
-                Math.pow(coordinatesStart.getPosX() - coordinatesDestination.getPosX(), 2));
-
-        assertEquals(expectedRes, aStarSearch.distanceToGoal(coordinatesStart, coordinatesDestination));
     }
 
     @Test
