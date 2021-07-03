@@ -92,6 +92,11 @@ public class Coordinates implements ICoordinates {
     }
 
     @Override
+    public String toString() {
+        return posX + "," + posY;
+    }
+
+    @Override
     public int hashCode() {
         return Objects.hash(posX, posY);
     }

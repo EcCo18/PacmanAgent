@@ -13,6 +13,7 @@ public class GhostBusterClass {
     private final PacmanTileType[][] currentWorld;
     private int startX;
     private int startY;
+    private ArrayList<GhostReport> reportList;
 
     // 2 blocks in each direction
     private final int searchRadius = 2;
@@ -23,10 +24,9 @@ public class GhostBusterClass {
         this.currentWorld = currentWorld;
     }
 
-    //ToDo remove Util print view
     public ArrayList<GhostReport> searchForGhosts() {
 
-        ArrayList<GhostReport> reportList = new ArrayList<>();
+        reportList = new ArrayList<>();
 
         PacmanTileType[][] worldSnapshot = createWorldSnapshot();
 
@@ -67,8 +67,6 @@ public class GhostBusterClass {
                 worldSnapshot[i-startX][p-startY] = currentWorld[i][p];
             }
         }
-
-        Util.printView(worldSnapshot);
 
         return worldSnapshot;
     }
@@ -126,5 +124,16 @@ public class GhostBusterClass {
 
     public Pacman getPacman() {
         return pacman;
+    }
+
+    public boolean isGhostInRange() {
+
+        if(this.reportList == null) {
+
+            return false;
+        } else {
+
+            return reportList.size() > 0;
+        }
     }
 }

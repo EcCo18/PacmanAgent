@@ -29,19 +29,19 @@ public class GhostHeuristic implements IHeuristic {
     public double getHeuristicValue(Coordinates fieldPos) {
 
         double distanceToGhostValue = evaluateDistanceToGhost(fieldPos);
-        System.out.println("Field, x: " + fieldPos.getPosX() + "; y: " + fieldPos.getPosY());
-        System.out.println("dist to ghost value: " + distanceToGhostValue);
+        // System.out.println("Field, x: " + fieldPos.getPosX() + "; y: " + fieldPos.getPosY());
+        // System.out.println("dist to ghost value: " + distanceToGhostValue);
         double directionValue = evaluateDirectionToGhost(fieldPos);
-        System.out.println("direction value: " + directionValue);
+        // System.out.println("direction value: " + directionValue);
 
         return distanceToGhostValue + directionValue;
     }
 
     @Override
     public void refresh() {
-        System.out.println("refreshed!");
+
         ghostList = ghostBusterClass.searchForGhosts();
-        System.out.println(ghostList.size());
+        // System.out.println(ghostList.size());
     }
 
     protected double evaluateDistanceToGhost(Coordinates fieldPos) {
@@ -114,5 +114,9 @@ public class GhostHeuristic implements IHeuristic {
         }
 
         return directions;
+    }
+
+    public GhostBusterClass getGhostBusterClass() {
+        return ghostBusterClass;
     }
 }

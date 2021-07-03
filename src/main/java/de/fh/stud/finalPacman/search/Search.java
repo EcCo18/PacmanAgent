@@ -8,6 +8,7 @@ import de.fh.stud.finalPacman.comparators.CompareCoordinatesByDepth;
 import de.fh.stud.finalPacman.comparators.IHeuristicComparator;
 import de.fh.stud.finalPacman.exceptions.NotFoundException;
 import de.fh.stud.finalPacman.exceptions.InvalidCoordinatesException;
+import de.fh.stud.finalPacman.ghosts.GhostBusterClass;
 import de.fh.stud.finalPacman.pacman.Pacman;
 import de.fh.stud.finalPacman.search.heuristics.DistanceHeuristic;
 
@@ -17,11 +18,12 @@ public abstract class Search {
 
     private PacmanTileType[][] currentWorld;
     private final boolean [][] wallMap;
-    private Pacman pacman;
+    private final Pacman pacman;
     private Stack<PacmanAction> savedMoves;
     private final IHeuristicComparator coordinatesComparator;
     private DistanceHeuristic distanceHeuristic;
     private final IHeuristic additionalHeuristic;
+    private final GhostBusterClass ghostBusterClass;
 
 
     public Search(PacmanTileType[][] currentWorld, Pacman pacman, IHeuristicComparator coordinatesComparator) {
@@ -33,6 +35,7 @@ public abstract class Search {
         this.coordinatesComparator = coordinatesComparator;
         this.distanceHeuristic = null;
         this.additionalHeuristic = coordinatesComparator.getHeuristic();
+        this.ghostBusterClass = coordinatesComparator.getGhostBusterClass();
     }
 
     public void calculateNextSteps(Coordinates coordinates) throws NotFoundException {
@@ -69,6 +72,9 @@ public abstract class Search {
 
         this.distanceHeuristic = new DistanceHeuristic(coordinates);
 
+        //TODO remove Console Output
+        //System.out.println("Searching for: " + coordinates.getPosX() + "," + coordinates.getPosY());
+
         PriorityQueue<Coordinates> openList = new PriorityQueue<>(this.coordinatesComparator);
         HashMap<Integer, Coordinates> closedList = new HashMap<>();
 
@@ -96,25 +102,38 @@ public abstract class Search {
         if(!found)
             throw new NotFoundException();
 
+        //TODO remove Console Output
+        //System.out.println("Found: " + currentCoordinates.getPosX() + "," + currentCoordinates.getPosY());
+
         return fillMovesStack(currentCoordinates);
     }
 
     public Coordinates find(PacmanTileType tileType) throws NotFoundException {
 
-        PriorityQueue<Coordinates> openList = new PriorityQueue<>(new CompareCoordinatesByDepth());
-        openList.add(pacman.getCurrentCoordinates());
+        PriorityQueue<Coordinates> openList = new PriorityQueue<>(this.coordinatesComparator);
+        HashMap<Integer, Coordinates> closedList = new HashMap<>();
 
-        while (openList.size() > 0) {
+        boolean found = false;
+        Coordinates currentCoordinates = null;
+        openList.add(getPacman().getCurrentCoordinates());
 
-            Coordinates currentCoordinates = openList.poll();
+        while (openList.size() > 0 && !found) {
 
-            if(getTileTypeAt(currentCoordinates) == tileType)
-                return currentCoordinates;
-            else
-                openList.addAll(getNextCoordinates(currentCoordinates));
+            currentCoordinates = openList.poll();
+            found = getTileTypeAt(currentCoordinates) == tileType;
 
+            if(!closedList.containsValue(currentCoordinates) && !found) {
+
+                closedList.put(currentCoordinates.hashCode(), currentCoordinates);
+
+                if (!isGhostAt(currentCoordinates))
+                    openList.addAll(getNextCoordinates(currentCoordinates));
+            }
         }
-        throw new NotFoundException();
+        if(found)
+            return currentCoordinates;
+        else
+            throw new NotFoundException();
     }
 
     protected boolean[][] buildWallMap(PacmanTileType[][] currentWorld) {
@@ -135,24 +154,17 @@ public abstract class Search {
     public void runRoundChecks(PacmanPercept pacmanPercept) {
 
         this.pacman.setCurrentCoordinates(pacmanPercept);
-        Coordinates coordinates = this.pacman.getCurrentCoordinates();
 
-        for(int i=0; i<currentWorld.length; i++) {
-
-            for(int p=0; p<currentWorld[0].length; p++) {
-
-                currentWorld[i][p] = pacmanPercept.getView()[i][p];
-            }
-        }
-
-        if(currentWorld[coordinates.getPosX()][coordinates.getPosY()] == PacmanTileType.DOT) {
-
-            this.currentWorld[coordinates.getPosX()][coordinates.getPosY()] = PacmanTileType.EMPTY;
-            this.pacman.ateDot();
-        }
+        buildCurrentWorld(pacmanPercept);
 
         if(this.additionalHeuristic != null)
             additionalHeuristic.refresh();
+
+        if(this.ghostBusterClass != null) {
+
+            if(ghostBusterClass.isGhostInRange())
+                this.savedMoves = new Stack<>();
+        }
     }
 
     public ArrayList<Coordinates> getNextCoordinates (Coordinates coordinates) {
@@ -189,10 +201,8 @@ public abstract class Search {
             default -> throw new InvalidCoordinatesException();
         }
 
-        if(isWallAt(resultCoordinates) || isGhostAt(resultCoordinates) ) {
-
+        if(isWallAt(resultCoordinates))
             throw new InvalidCoordinatesException();
-        }
 
         return resultCoordinates;
     }
@@ -222,6 +232,17 @@ public abstract class Search {
     protected PacmanTileType getTileTypeAt (Coordinates coordinates) {
 
         return currentWorld[coordinates.getPosX()][coordinates.getPosY()];
+    }
+
+    protected void buildCurrentWorld (PacmanPercept pacmanPercept) {
+
+        for(int i=0; i<currentWorld.length; i++) {
+
+            for(int p=0; p<currentWorld[0].length; p++) {
+
+                currentWorld[i][p] = pacmanPercept.getView()[i][p];
+            }
+        }
     }
 
     public PacmanTileType[][] getCurrentWorld() { return currentWorld; }

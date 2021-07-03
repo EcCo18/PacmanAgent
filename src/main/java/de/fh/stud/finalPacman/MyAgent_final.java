@@ -36,14 +36,22 @@ public class MyAgent_final extends PacmanAgent_2021 {
 		if(search == null)
 			search = new GhostSearch(percept.getView(), new Pacman(percept));
 
-		try {
-			search.runRoundChecks(percept);
-			Coordinates nextDot = search.find(PacmanTileType.DOT);
-			search.calculateNextSteps(nextDot);
-			return search.getNextMove();
-		} catch (NotFoundException ignored) { }
+		PacmanAction nextMove = PacmanAction.QUIT_GAME;
 
-		return PacmanAction.QUIT_GAME;
+		try {
+
+			search.runRoundChecks(percept);
+			nextMove = search.getNextMove();
+		} catch (NotFoundException ignored) {
+
+			try {
+				Coordinates nextDot = search.find(PacmanTileType.DOT);
+				search.calculateNextSteps(nextDot);
+				nextMove = search.getNextMove();
+			} catch (NotFoundException ignored2) { }
+		}
+
+		return nextMove;
 	}
 
 	@Override

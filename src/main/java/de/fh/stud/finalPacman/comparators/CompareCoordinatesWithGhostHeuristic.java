@@ -1,6 +1,7 @@
 package de.fh.stud.finalPacman.comparators;
 
 import de.fh.stud.finalPacman.Coordinates;
+import de.fh.stud.finalPacman.ghosts.GhostBusterClass;
 import de.fh.stud.finalPacman.search.IHeuristic;
 import de.fh.stud.finalPacman.search.heuristics.GhostHeuristic;
 
@@ -8,19 +9,29 @@ import java.util.Comparator;
 
 public class CompareCoordinatesWithGhostHeuristic implements IHeuristicComparator {
 
-    private GhostHeuristic ghostHeuristic;
+    private final GhostHeuristic ghostHeuristic;
 
     public CompareCoordinatesWithGhostHeuristic (GhostHeuristic ghostHeuristic) {
 
         this.ghostHeuristic = ghostHeuristic;
     }
 
+    @Override
     public int compare(Coordinates lhs, Coordinates rhs) {
+        int lhsDepth = lhs.getDepth();
+        int rhsDepth = rhs.getDepth();
+        int lhsGhostHeuristic = (int) Math.floor(ghostHeuristic.getHeuristicValue(lhs)) * (-1);
+        int rhsGhostHeuristic = (int) Math.floor(ghostHeuristic.getHeuristicValue(rhs)) * (-1);
 
-        return (int) (lhs.getDepth() - rhs.getDepth() + Math.floor(lhs.getDistance() - rhs.getDistance())) + (int) Math.floor(ghostHeuristic.getHeuristicValue(lhs) - ghostHeuristic.getHeuristicValue(rhs));
+        return lhsDepth - rhsDepth +  (lhsGhostHeuristic - rhsGhostHeuristic) * 2;
     }
 
     public IHeuristic getHeuristic() {
         return ghostHeuristic;
+    }
+
+    @Override
+    public GhostBusterClass getGhostBusterClass() {
+        return ghostHeuristic.getGhostBusterClass();
     }
 }
