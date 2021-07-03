@@ -4,5 +4,6 @@ import de.fh.stud.finalPacman.Coordinates;
 
 public interface IHeuristic {
 
-    double getHeuristicValue(Coordinates currentPosition);
+    double getHeuristicValue(Coordinates fieldPos);
+    void refresh();
 }

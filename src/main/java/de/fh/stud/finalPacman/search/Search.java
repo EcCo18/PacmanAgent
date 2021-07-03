@@ -1,9 +1,11 @@
 package de.fh.stud.finalPacman.search;
 
+import de.fh.pacman.PacmanPercept;
 import de.fh.pacman.enums.PacmanAction;
 import de.fh.pacman.enums.PacmanTileType;
 import de.fh.stud.finalPacman.Coordinates;
 import de.fh.stud.finalPacman.comparators.CompareCoordinatesByDepth;
+import de.fh.stud.finalPacman.comparators.IHeuristicComparator;
 import de.fh.stud.finalPacman.exceptions.NotFoundException;
 import de.fh.stud.finalPacman.exceptions.InvalidCoordinatesException;
 import de.fh.stud.finalPacman.pacman.Pacman;
@@ -17,18 +19,20 @@ public abstract class Search {
     private final boolean [][] wallMap;
     private Pacman pacman;
     private Stack<PacmanAction> savedMoves;
-    private final Comparator<Coordinates> coordinatesComparator;
+    private final IHeuristicComparator coordinatesComparator;
     private DistanceHeuristic distanceHeuristic;
+    private final IHeuristic additionalHeuristic;
 
 
-    public Search(PacmanTileType[][] currentWorld, Pacman pacman, Comparator<Coordinates> coordinatesComparator) {
+    public Search(PacmanTileType[][] currentWorld, Pacman pacman, IHeuristicComparator coordinatesComparator) {
 
         this.pacman = pacman;
         this.currentWorld = currentWorld;
         wallMap = buildWallMap(currentWorld);
-        this.savedMoves = null;
+        this.savedMoves = new Stack<>();
         this.coordinatesComparator = coordinatesComparator;
         this.distanceHeuristic = null;
+        this.additionalHeuristic = coordinatesComparator.getHeuristic();
     }
 
     public void calculateNextSteps(Coordinates coordinates) throws NotFoundException {
@@ -41,7 +45,7 @@ public abstract class Search {
      */
     public PacmanAction getNextMove() throws NotFoundException {
 
-        if (savedMoves == null)
+        if (savedMoves.isEmpty())
             throw new NotFoundException();
 
         return savedMoves.pop();
@@ -52,9 +56,9 @@ public abstract class Search {
         Stack<PacmanAction> returnStack = new Stack<>();
         Coordinates currentCoordinates = coordinates;
 
-        while (coordinates.getPreviousCoordinates() != null) {
+        while (currentCoordinates.getMoveBefore() != null) {
 
-            returnStack.push(coordinates.getMoveBefore());
+            returnStack.push(currentCoordinates.getMoveBefore());
             currentCoordinates = currentCoordinates.getPreviousCoordinates();
         }
 
@@ -75,7 +79,7 @@ public abstract class Search {
         while (openList.size() > 0 && !found) {
 
             currentCoordinates = openList.poll();
-            found = currentCoordinates == coordinates;
+            found = currentCoordinates.equals(coordinates);
 
             if(!closedList.containsValue(currentCoordinates) && !found) {
 
@@ -89,7 +93,7 @@ public abstract class Search {
             }
         }
 
-        if(!found || currentCoordinates == null)
+        if(!found)
             throw new NotFoundException();
 
         return fillMovesStack(currentCoordinates);
@@ -104,13 +108,11 @@ public abstract class Search {
 
             Coordinates currentCoordinates = openList.poll();
 
-            if(getTileTypeAt(currentCoordinates) == tileType) {
-
+            if(getTileTypeAt(currentCoordinates) == tileType)
                 return currentCoordinates;
-            } else {
-
+            else
                 openList.addAll(getNextCoordinates(currentCoordinates));
-            }
+
         }
         throw new NotFoundException();
     }
@@ -124,18 +126,38 @@ public abstract class Search {
             for(int p=0; p<currentWorld[0].length; p++) {
 
                 tempWallMap[i][p] = currentWorld[i][p] == PacmanTileType.WALL;
+/*                if(currentWorld[i][p] == PacmanTileType.PACMAN)
+                    currentWorld[i][p] = PacmanTileType.EMPTY;
+
+                if(currentWorld[i][p] == PacmanTileType.GHOST_AND_DOT)
+                    currentWorld[i][p] = PacmanTileType.DOT;*/
             }
         }
 
         return tempWallMap;
     }
 
-    public void ateDotAt(Coordinates coordinates) {
+    public void runRoundChecks(PacmanPercept pacmanPercept) {
+
+        this.pacman.setCurrentCoordinates(pacmanPercept);
+        Coordinates coordinates = this.pacman.getCurrentCoordinates();
+
+        for(int i=0; i<currentWorld.length; i++) {
+
+            for(int p=0; p<currentWorld[0].length; p++) {
+
+                currentWorld[i][p] = pacmanPercept.getView()[i][p];
+            }
+        }
 
         if(currentWorld[coordinates.getPosX()][coordinates.getPosY()] == PacmanTileType.DOT) {
 
             this.currentWorld[coordinates.getPosX()][coordinates.getPosY()] = PacmanTileType.EMPTY;
+            this.pacman.ateDot();
         }
+
+        if(this.additionalHeuristic != null)
+            additionalHeuristic.refresh();
     }
 
     public ArrayList<Coordinates> getNextCoordinates (Coordinates coordinates) {
@@ -167,8 +189,8 @@ public abstract class Search {
 
             case GO_EAST -> resultCoordinates = generateNextCoordinates(coordinates.getPosX()+1, coordinates.getPosY(), coordinates, PacmanAction.GO_EAST);
             case GO_WEST -> resultCoordinates = generateNextCoordinates(coordinates.getPosX()-1, coordinates.getPosY(), coordinates, PacmanAction.GO_WEST);
-            case GO_NORTH -> resultCoordinates = generateNextCoordinates(coordinates.getPosX(), coordinates.getPosY()+1, coordinates, PacmanAction.GO_NORTH);
-            case GO_SOUTH -> resultCoordinates = generateNextCoordinates(coordinates.getPosX(), coordinates.getPosY()-1, coordinates, PacmanAction.GO_SOUTH);
+            case GO_NORTH -> resultCoordinates = generateNextCoordinates(coordinates.getPosX(), coordinates.getPosY()-1, coordinates, PacmanAction.GO_NORTH);
+            case GO_SOUTH -> resultCoordinates = generateNextCoordinates(coordinates.getPosX(), coordinates.getPosY()+1, coordinates, PacmanAction.GO_SOUTH);
             default -> throw new InvalidCoordinatesException();
         }
 

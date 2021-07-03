@@ -115,8 +115,13 @@ class SearchTest {
     @Test
     public void shouldMoveToNorth() throws InvalidCoordinatesException {
 
-        Coordinates coordinates = new Coordinates(1,1);
-        Coordinates expectedCoordinates = new Coordinates(1, 2);
+        widthSearch.getPacman().setCurrentCoordinates(new Coordinates(1, 2));
+        startWorld[1][1] = PacmanTileType.DOT;
+        startWorld[1][2] = PacmanTileType.PACMAN;
+        widthSearch.setCurrentWorld(startWorld);
+
+        Coordinates coordinates = new Coordinates(1,2);
+        Coordinates expectedCoordinates = new Coordinates(1, 1);
 
         PacmanAction pacmanAction = PacmanAction.GO_NORTH;
 
@@ -137,13 +142,8 @@ class SearchTest {
     @Test
     public void shouldMoveToSouth() throws InvalidCoordinatesException {
 
-        widthSearch.getPacman().setCurrentCoordinates(new Coordinates(2, 2));
-        startWorld[1][1] = PacmanTileType.DOT;
-        startWorld[2][2] = PacmanTileType.PACMAN;
-        widthSearch.setCurrentWorld(startWorld);
-
-        Coordinates coordinates = new Coordinates(2,2);
-        Coordinates expectedCoordinates = new Coordinates(2, 1);
+        Coordinates coordinates = new Coordinates(1,1);
+        Coordinates expectedCoordinates = new Coordinates(1, 2);
 
         PacmanAction pacmanAction = PacmanAction.GO_SOUTH;
 

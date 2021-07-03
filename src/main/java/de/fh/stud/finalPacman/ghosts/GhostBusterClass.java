@@ -1,6 +1,8 @@
 package de.fh.stud.finalPacman.ghosts;
 
+import de.fh.kiServer.util.Util;
 import de.fh.pacman.enums.PacmanTileType;
+import de.fh.stud.finalPacman.Coordinates;
 import de.fh.stud.finalPacman.pacman.Pacman;
 
 import java.util.ArrayList;
@@ -9,6 +11,8 @@ public class GhostBusterClass {
 
     private final Pacman pacman;
     private final PacmanTileType[][] currentWorld;
+    private int startX;
+    private int startY;
 
     // 2 blocks in each direction
     private final int searchRadius = 2;
@@ -19,24 +23,108 @@ public class GhostBusterClass {
         this.currentWorld = currentWorld;
     }
 
-    protected ArrayList<GhostReport> searchForGhosts() {
+    //ToDo remove Util print view
+    public ArrayList<GhostReport> searchForGhosts() {
 
         ArrayList<GhostReport> reportList = new ArrayList<>();
 
+        PacmanTileType[][] worldSnapshot = createWorldSnapshot();
+
+        for (int i = 0; i < worldSnapshot.length; i++) {
+
+            for (int p = 0; p < worldSnapshot[0].length; p++) {
+                if (worldSnapshot[i][p] == PacmanTileType.GHOST ||
+                        worldSnapshot[i][p] == PacmanTileType.GHOST_AND_DOT ||
+                        worldSnapshot[i][p] == PacmanTileType.GHOST_AND_POWERPILL) {
+
+                    reportList.add(new GhostReport(new Coordinates(startX + i, startY + p),
+                            new Coordinates(pacman.getCurrentCoordinates().getPosX(),
+                                            pacman.getCurrentCoordinates().getPosY())));
+                }
+            }
+        }
 
         return reportList;
     }
 
     protected PacmanTileType[][] createWorldSnapshot() {
 
-        int xLength;
-        int xLengthLeft;
-        int xLengthRight;
+        int xLengthLeft = calcLengthLeft();
+        int xLengthRight = calcLengthRight();
 
-        if((currentWorld.length-1) - pacman.getCurrentCoordinates().getPosX() > 2) {
+        int yLengthUp = calcLengthUp();
+        int yLengthDown = calcLengthDown();
 
+        PacmanTileType[][] worldSnapshot = new PacmanTileType[calcSnapSizeWidth(xLengthLeft, xLengthRight)][calcSnapSizeHeight(yLengthUp, yLengthDown)];
+
+        this.startX = (pacman.getCurrentCoordinates().getPosX() - xLengthLeft);
+        this.startY = (pacman.getCurrentCoordinates().getPosY() - yLengthDown);
+        // copy data from currentWorld in snapshot
+        for (int i = startX; i < startX + worldSnapshot.length; i++) {
+
+            for (int p = startY; p < startY + worldSnapshot[0].length; p++) {
+
+                worldSnapshot[i-startX][p-startY] = currentWorld[i][p];
+            }
         }
-        return null;
+
+        Util.printView(worldSnapshot);
+
+        return worldSnapshot;
     }
 
+    protected int calcLengthRight() {
+
+        int calcLengthRight = pacman.getCurrentCoordinates().getPosX() - (currentWorld.length - 1);
+        if (calcLengthRight < 0) {
+
+            calcLengthRight = calcLengthRight * (-1);
+            return Math.min(calcLengthRight, searchRadius);
+        } else {
+            return calcLengthRight;
+        }
+    }
+
+    protected int calcLengthLeft() {
+
+        int calcLengthLeft = pacman.getCurrentCoordinates().getPosX();
+        return Math.min(calcLengthLeft, searchRadius);
+    }
+
+    protected int calcLengthUp() {
+
+        int calcLengthUp = pacman.getCurrentCoordinates().getPosY() - (currentWorld[0].length - 1);
+        if (calcLengthUp < 0) {
+
+            calcLengthUp = calcLengthUp * (-1);
+
+            return Math.min(calcLengthUp, searchRadius);
+        } else {
+            return calcLengthUp;
+        }
+    }
+
+    protected int calcLengthDown() {
+
+        int calcLengthDown = pacman.getCurrentCoordinates().getPosY();
+        return Math.min(calcLengthDown, searchRadius);
+    }
+
+    protected int calcSnapSizeHeight(int yLengthUp, int yLengthDown) {
+
+        yLengthUp += 1;
+
+        return yLengthUp + yLengthDown;
+    }
+
+    protected int calcSnapSizeWidth(int xLengthLeft, int xLengthRight) {
+
+        xLengthRight += 1;
+
+        return xLengthLeft + xLengthRight;
+    }
+
+    public Pacman getPacman() {
+        return pacman;
+    }
 }

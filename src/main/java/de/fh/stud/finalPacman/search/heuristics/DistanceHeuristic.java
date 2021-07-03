@@ -13,11 +13,15 @@ public class DistanceHeuristic implements IHeuristic {
     }
 
     @Override
-    public double getHeuristicValue(Coordinates currentPosition) {
+    public double getHeuristicValue(Coordinates fieldPos) {
 
-        int height = currentPosition.getPosY() - targetPosition.getPosY();
-        int width = currentPosition.getPosX() - targetPosition.getPosX();
+        int height = fieldPos.getPosY() - targetPosition.getPosY();
+        int width = fieldPos.getPosX() - targetPosition.getPosX();
 
         return  Math.sqrt(height*height + width*width);
+    }
+
+    @Override
+    public void refresh() {
     }
 }

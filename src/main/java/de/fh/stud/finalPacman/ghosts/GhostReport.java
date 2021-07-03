@@ -1,8 +1,9 @@
 package de.fh.stud.finalPacman.ghosts;
 
 import de.fh.stud.finalPacman.Coordinates;
+import de.fh.stud.finalPacman.search.ICoordinates;
 
-public class GhostReport {
+public class GhostReport implements ICoordinates {
 
     private final double distanceToGhost;
     private final Coordinates ghostCoordinates;
@@ -27,7 +28,8 @@ public class GhostReport {
         return distanceToGhost;
     }
 
-    public Coordinates getGhostCoordinates() {
+    @Override
+    public Coordinates getCurrentCoordinates() {
         return ghostCoordinates;
     }
 

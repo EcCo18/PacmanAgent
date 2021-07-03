@@ -2,10 +2,11 @@ package de.fh.stud.finalPacman;
 
 import de.fh.pacman.enums.PacmanAction;
 import de.fh.pacman.enums.PacmanTileType;
+import de.fh.stud.finalPacman.search.ICoordinates;
 
 import java.util.Objects;
 
-public class Coordinates {
+public class Coordinates implements ICoordinates {
 
     public Coordinates(int posX, int posY) {
 
@@ -93,5 +94,10 @@ public class Coordinates {
     @Override
     public int hashCode() {
         return Objects.hash(posX, posY);
+    }
+
+    @Override
+    public Coordinates getCurrentCoordinates() {
+        return this;
     }
 }

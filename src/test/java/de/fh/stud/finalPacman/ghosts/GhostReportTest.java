@@ -22,8 +22,8 @@ class GhostReportTest {
     @Test
     public void shouldCalculateDistance() {
 
-        double expectedRes = Math.sqrt(Math.pow(ghostReport.getPacmanCoordinates().getPosY() - ghostReport.getGhostCoordinates().getPosY(), 2) +
-                Math.pow(ghostReport.getPacmanCoordinates().getPosX() - ghostReport.getGhostCoordinates().getPosX(), 2));
+        double expectedRes = Math.sqrt(Math.pow(ghostReport.getPacmanCoordinates().getPosY() - ghostReport.getCurrentCoordinates().getPosY(), 2) +
+                Math.pow(ghostReport.getPacmanCoordinates().getPosX() - ghostReport.getCurrentCoordinates().getPosX(), 2));
 
         assertEquals(expectedRes, ghostReport.getDistanceToGhost());
     }
