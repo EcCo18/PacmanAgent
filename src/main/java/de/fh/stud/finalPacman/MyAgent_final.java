@@ -38,16 +38,10 @@ public class MyAgent_final extends PacmanAgent_2021 {
 
 		try {
 			search.runRoundChecks(percept);
+			Coordinates nextDot = search.find(PacmanTileType.DOT);
+			search.calculateNextSteps(nextDot);
 			return search.getNextMove();
-		} catch (NotFoundException ignored) {
-
-			try {
-
-				Coordinates nextDot = search.find(PacmanTileType.DOT);
-				search.calculateNextSteps(nextDot);
-				return search.getNextMove();
-			} catch (NotFoundException ignored2) { }
-		}
+		} catch (NotFoundException ignored) { }
 
 		return PacmanAction.QUIT_GAME;
 	}

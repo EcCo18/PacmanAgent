@@ -29,6 +29,7 @@ public class GhostHeuristic implements IHeuristic {
     public double getHeuristicValue(Coordinates fieldPos) {
 
         double distanceToGhostValue = evaluateDistanceToGhost(fieldPos);
+        System.out.println("Field, x: " + fieldPos.getPosX() + "; y: " + fieldPos.getPosY());
         System.out.println("dist to ghost value: " + distanceToGhostValue);
         double directionValue = evaluateDirectionToGhost(fieldPos);
         System.out.println("direction value: " + directionValue);

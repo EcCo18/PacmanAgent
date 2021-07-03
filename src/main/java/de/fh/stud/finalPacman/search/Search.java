@@ -126,11 +126,6 @@ public abstract class Search {
             for(int p=0; p<currentWorld[0].length; p++) {
 
                 tempWallMap[i][p] = currentWorld[i][p] == PacmanTileType.WALL;
-/*                if(currentWorld[i][p] == PacmanTileType.PACMAN)
-                    currentWorld[i][p] = PacmanTileType.EMPTY;
-
-                if(currentWorld[i][p] == PacmanTileType.GHOST_AND_DOT)
-                    currentWorld[i][p] = PacmanTileType.DOT;*/
             }
         }
 
@@ -194,7 +189,7 @@ public abstract class Search {
             default -> throw new InvalidCoordinatesException();
         }
 
-        if(isWallAt(resultCoordinates) || resultCoordinates.getPosX() < 1 || resultCoordinates.getPosY() < 1) {
+        if(isWallAt(resultCoordinates) || isGhostAt(resultCoordinates) ) {
 
             throw new InvalidCoordinatesException();
         }
@@ -215,6 +210,13 @@ public abstract class Search {
     protected boolean isWallAt(Coordinates coordinates) {
 
         return wallMap[coordinates.getPosX()][coordinates.getPosY()];
+    }
+
+    protected boolean isGhostAt(Coordinates coordinates) {
+
+        PacmanTileType tile = currentWorld[coordinates.getPosX()][coordinates.getPosY()];
+
+        return tile == PacmanTileType.GHOST || tile == PacmanTileType.GHOST_AND_DOT || tile == PacmanTileType.GHOST_AND_POWERPILL;
     }
 
     protected PacmanTileType getTileTypeAt (Coordinates coordinates) {
