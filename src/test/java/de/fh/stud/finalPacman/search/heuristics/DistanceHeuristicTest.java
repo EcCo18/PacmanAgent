@@ -13,11 +13,11 @@ class DistanceHeuristicTest {
 
         Coordinates coordinatesStart = new Coordinates(1, 1);
         Coordinates coordinatesDestination = new Coordinates(2, 4);
-        IHeuristic distanceHeuristic = new DistanceHeuristic();
+        IHeuristic distanceHeuristic = new DistanceHeuristic(coordinatesDestination);
 
         double expectedRes = Math.sqrt(Math.pow(coordinatesStart.getPosY() - coordinatesDestination.getPosY(), 2) +
                 Math.pow(coordinatesStart.getPosX() - coordinatesDestination.getPosX(), 2));
 
-        assertEquals(expectedRes, distanceHeuristic.getHeuristicValue(coordinatesStart, coordinatesDestination));
+        assertEquals(expectedRes, distanceHeuristic.getHeuristicValue(coordinatesStart));
     }
 }

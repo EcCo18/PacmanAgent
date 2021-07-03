@@ -18,7 +18,7 @@ public abstract class Search {
     private Pacman pacman;
     private Stack<PacmanAction> savedMoves;
     private final Comparator<Coordinates> coordinatesComparator;
-    private final DistanceHeuristic distanceHeuristic;
+    private DistanceHeuristic distanceHeuristic;
 
 
     public Search(PacmanTileType[][] currentWorld, Pacman pacman, Comparator<Coordinates> coordinatesComparator) {
@@ -28,12 +28,12 @@ public abstract class Search {
         wallMap = buildWallMap(currentWorld);
         this.savedMoves = null;
         this.coordinatesComparator = coordinatesComparator;
-        this.distanceHeuristic = new DistanceHeuristic();
+        this.distanceHeuristic = null;
     }
 
     public void calculateNextSteps(Coordinates coordinates) throws NotFoundException {
 
-        setSavedMoves(findPathTo(coordinates));
+        this.savedMoves = findPathTo(coordinates);
     }
     /**
      * finds next step for reaching target.
@@ -63,6 +63,8 @@ public abstract class Search {
 
     public Stack<PacmanAction> findPathTo (Coordinates coordinates) throws NotFoundException {
 
+        this.distanceHeuristic = new DistanceHeuristic(coordinates);
+
         PriorityQueue<Coordinates> openList = new PriorityQueue<>(this.coordinatesComparator);
         HashMap<Integer, Coordinates> closedList = new HashMap<>();
 
@@ -81,7 +83,7 @@ public abstract class Search {
 
                 for(Coordinates coords : getNextCoordinates(currentCoordinates)) {
 
-                    coords.setDistance(distanceHeuristic.getHeuristicValue(coords, coordinates));
+                    coords.setDistance(distanceHeuristic.getHeuristicValue(coords));
                     openList.add(coords);
                 }
             }
@@ -154,10 +156,7 @@ public abstract class Search {
 
             Coordinates expandedCoords = getCoordinatesAfterMove(coordinates, pacmanAction);
             expandedCoordinates.add(expandedCoords);
-        } catch (InvalidCoordinatesException ignored) {
-
-            System.out.println("Catched InvalidCoordinatesException");
-        }
+        } catch (InvalidCoordinatesException ignored) { }
     }
 
     protected Coordinates getCoordinatesAfterMove (Coordinates coordinates, PacmanAction pacmanAction) throws InvalidCoordinatesException {
@@ -207,12 +206,4 @@ public abstract class Search {
     public boolean[][] getWallMap() { return wallMap; }
 
     public Pacman getPacman () { return this.pacman; }
-
-
-    public Stack<PacmanAction> getSavedMoves() {
-        return savedMoves;
-    }
-    public void setSavedMoves(Stack<PacmanAction> savedMoves) {
-        this.savedMoves = savedMoves;
-    }
 }
