@@ -1,6 +1,5 @@
 package de.fh.stud.finalPacman.ghosts;
 
-import de.fh.kiServer.util.Util;
 import de.fh.pacman.enums.PacmanTileType;
 import de.fh.stud.finalPacman.Coordinates;
 import de.fh.stud.finalPacman.pacman.Pacman;

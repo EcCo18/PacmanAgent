@@ -71,9 +71,6 @@ public abstract class Search {
 
         this.distanceHeuristic = new DistanceHeuristic(coordinates);
 
-        //TODO remove Console Output
-        //System.out.println("Searching for: " + coordinates.getPosX() + "," + coordinates.getPosY());
-
         PriorityQueue<Coordinates> openList = new PriorityQueue<>(this.coordinatesComparator);
         HashMap<Integer, Coordinates> closedList = new HashMap<>();
 
@@ -100,9 +97,6 @@ public abstract class Search {
 
         if(!found)
             throw new NotFoundException();
-
-        //TODO remove Console Output
-        //System.out.println("Found: " + currentCoordinates.getPosX() + "," + currentCoordinates.getPosY());
 
         return fillMovesStack(currentCoordinates);
     }
@@ -155,11 +149,8 @@ public abstract class Search {
                     openList.addAll(getNextCoordinates(currentCoordinates));
             }
         }
-        if(found) {
-            //TODO remove Console Output
-            //System.out.println("Next Move To: " + currentCoordinates);
+        if(found)
             return currentCoordinates;
-        }
         else
             throw new NotFoundException();
     }
@@ -192,7 +183,7 @@ public abstract class Search {
             double distanceToNearestGhost = ghostBusterClass.getClosestGhostInRange();
 
             try {
-                if(distanceToNearestGhost < 1)
+                if(distanceToNearestGhost < 1.5)
                     calculateNextSteps(findBestField());
                 else
                     calculateNextSteps(find(PacmanTileType.DOT));

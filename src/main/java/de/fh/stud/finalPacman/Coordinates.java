@@ -1,7 +1,6 @@
 package de.fh.stud.finalPacman;
 
 import de.fh.pacman.enums.PacmanAction;
-import de.fh.pacman.enums.PacmanTileType;
 import de.fh.stud.finalPacman.search.ICoordinates;
 
 import java.util.Objects;
@@ -25,11 +24,12 @@ public class Coordinates implements ICoordinates {
         this.depth = depth;
         this.moveBefore = null;
         this.previousCoordinates = null;
+        this.distance = distance;
     }
 
-    private int posX;
-    private int posY;
-    private int depth;
+    private final int posX;
+    private final int posY;
+    private final int depth;
     private double distance;
 
     private PacmanAction moveBefore;
@@ -60,27 +60,15 @@ public class Coordinates implements ICoordinates {
     {
         return posX;
     }
-    public void setPosX(int posX)
-    {
-        this.posX = posX;
-    }
 
     public int getPosY()
     {
         return posY;
     }
-    public void setPosY(int posY)
-    {
-        this.posY = posY;
-    }
 
     public int getDepth()
     {
         return depth;
-    }
-    public void setDepth(int depth)
-    {
-        this.depth = depth;
     }
 
     public boolean equals (Object o) {

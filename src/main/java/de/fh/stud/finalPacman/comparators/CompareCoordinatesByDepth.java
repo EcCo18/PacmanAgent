@@ -3,8 +3,6 @@ package de.fh.stud.finalPacman.comparators;
 import de.fh.stud.finalPacman.Coordinates;
 import de.fh.stud.finalPacman.search.IHeuristic;
 
-import java.util.Comparator;
-
 public class CompareCoordinatesByDepth implements IHeuristicComparator {
 
     public int compare(Coordinates lhs, Coordinates rhs) {

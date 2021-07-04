@@ -5,7 +5,7 @@ import de.fh.stud.finalPacman.search.IHeuristic;
 
 public class DistanceHeuristic implements IHeuristic {
 
-    private Coordinates targetPosition;
+    private final Coordinates targetPosition;
 
     public DistanceHeuristic (Coordinates targetPosition) {
 

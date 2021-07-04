@@ -7,7 +7,6 @@ import de.fh.stud.finalPacman.search.ICoordinates;
 public class Pacman implements ICoordinates {
 
     private Coordinates currentCoordinates;
-    private int dotsRemaining;
 
     public Pacman(Coordinates currentCoordinates) {
 
@@ -31,8 +30,4 @@ public class Pacman implements ICoordinates {
 
         this.currentCoordinates = new Coordinates(percept.getPosX(), percept.getPosY());
     }
-
-    public int getDotsRemaining () { return this.dotsRemaining; }
-
-    public void ateDot () { this.dotsRemaining--; }
 }
