@@ -92,9 +92,9 @@ public abstract class Search {
                 Coordinates currentCoordinates = new Coordinates(i,p);
                 double heuristicValue = additionalHeuristic.getHeuristicValue(currentCoordinates);
                 double distanceHeuristicValue = distanceHeuristic.getHeuristicValue(currentCoordinates);
-                double deadEndHeuristicValue = deadEndHeuristic.getHeuristicValue(currentCoordinates);
+                double deadEndHeuristicValue = deadEndHeuristic.getHeuristicValue(currentCoordinates) * 30;
 
-                double currentCoordinatesHeuristicValue = heuristicValue * heuristicFactor - distanceHeuristicValue - deadEndHeuristicValue * 50;
+                double currentCoordinatesHeuristicValue = heuristicValue * heuristicFactor - distanceHeuristicValue - deadEndHeuristicValue;
 
                 if(!isGhostAt(currentCoordinates) && !isWallAt(currentCoordinates) && bestCoordinatesHeuristicValue < currentCoordinatesHeuristicValue) {
 

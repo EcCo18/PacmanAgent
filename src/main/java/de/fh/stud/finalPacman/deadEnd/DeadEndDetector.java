@@ -9,7 +9,7 @@ import java.util.ArrayList;
 public class DeadEndDetector {
 
     private final PacmanTileType[][] currentWorld;
-    private final int iterationMax = 5;
+    private final int iterationMax = 20;
     private ArrayList<Coordinates> closedList;
     private final Pacman pacman;
 
@@ -52,7 +52,7 @@ public class DeadEndDetector {
             closedList.add(nextPossibleSteps.get(0));
             if(iteration <= iterationMax) {
 
-                System.out.println("iteration: " + iteration);
+                //System.out.println("iteration: " + iteration);
                 return checkForDeadEnd(nextPossibleSteps.get(0), ++iteration);
             } else {
 
@@ -93,8 +93,8 @@ public class DeadEndDetector {
             }
         }
 
-        System.out.println("Found " + nextPossibleSteps.size() + " possible steps for (" +
-                fieldPos.getPosX() + "/" + fieldPos.getPosY() + ")");
+        //System.out.println("Found " + nextPossibleSteps.size() + " possible steps for (" +
+        //        fieldPos.getPosX() + "/" + fieldPos.getPosY() + ")");
         return nextPossibleSteps;
     }
 
