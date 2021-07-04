@@ -14,27 +14,27 @@ public class GhostHeuristic implements IHeuristic {
 
     private final GhostBusterClass ghostBusterClass;
     private ArrayList<GhostReport> ghostList;
-    private Pacman pacman;
+    private final Pacman pacman;
+    private final PacmanTileType[][] currentWorld;
 
     public GhostHeuristic(Pacman pacman, PacmanTileType[][] currentWorld) {
 
         ghostBusterClass = new GhostBusterClass(pacman, currentWorld);
         ghostList = ghostBusterClass.searchForGhosts();
 
+        this.currentWorld = currentWorld;
+
         this.pacman = ghostBusterClass.getPacman();
     }
 
-    // ToDo remove souts
     @Override
     public double getHeuristicValue(Coordinates fieldPos) {
 
         double distanceToGhostValue = evaluateDistanceToGhost(fieldPos);
-        // System.out.println("Field, x: " + fieldPos.getPosX() + "; y: " + fieldPos.getPosY());
-        // System.out.println("dist to ghost value: " + distanceToGhostValue);
         double directionValue = evaluateDirectionToGhost(fieldPos);
-        // System.out.println("direction value: " + directionValue);
+        double powerpillValue = checkForPowerpill(fieldPos);
 
-        return distanceToGhostValue + directionValue;
+        return distanceToGhostValue * 3 + directionValue * 1.5 + powerpillValue;
     }
 
     @Override
@@ -44,9 +44,28 @@ public class GhostHeuristic implements IHeuristic {
         // System.out.println(ghostList.size());
     }
 
+    /**
+     * checks if field contains powerpill and returns a high value only when in panic mode.
+     * @param fieldPos
+     * @return double (heuristic value)
+     */
+    protected double checkForPowerpill(Coordinates fieldPos) {
+
+        double res = 0;
+        if(!ghostList.isEmpty()) {
+
+            if(this.currentWorld[fieldPos.getPosX()][fieldPos.getPosY()] == PacmanTileType.POWERPILL) {
+
+                res += 15;
+            }
+        }
+
+        return res;
+    }
+
     protected double evaluateDistanceToGhost(Coordinates fieldPos) {
 
-        double erg = 0;
+        double res = 0;
 
         for (GhostReport ghostReport : ghostList) {
 
@@ -56,16 +75,16 @@ public class GhostHeuristic implements IHeuristic {
 
             if (distanceToGhost <= 2) {
 
-                erg = erg - 5;
+                res = res - 5;
             } else if (distanceToGhost == 3) {
 
-                erg = erg + 0.5;
+                res = res + 0.5;
             } else if (distanceToGhost > 3 && distanceToGhost <= 5) {
 
-                erg = erg + 1;
+                res = res + 1;
             }
         }
-        return erg;
+        return res;
     }
 
     protected double evaluateDirectionToGhost(Coordinates fieldPos) {
@@ -82,7 +101,8 @@ public class GhostHeuristic implements IHeuristic {
 
                     if(pacmanToGhostDirection == pacmanToFieldDirection) {
 
-                        erg -= 2;
+                        //2
+                        erg -= 5;
                     }
                 }
             }

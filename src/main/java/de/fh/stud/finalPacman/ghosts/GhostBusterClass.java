@@ -16,7 +16,7 @@ public class GhostBusterClass {
     private ArrayList<GhostReport> reportList;
 
     // 2 blocks in each direction
-    private final int searchRadius = 2;
+    private final int searchRadius = 3;
 
     public GhostBusterClass(Pacman pacman, PacmanTileType[][] currentWorld) {
 
@@ -135,5 +135,20 @@ public class GhostBusterClass {
 
             return reportList.size() > 0;
         }
+    }
+
+    public double getClosestGhostInRange() {
+
+        double minimumDistance = 0;
+
+        if(isGhostInRange()) {
+
+            for (GhostReport ghostReport: reportList) {
+
+                minimumDistance = Math.min(ghostReport.getDistanceToGhost(), minimumDistance);
+            }
+        }
+
+        return minimumDistance;
     }
 }

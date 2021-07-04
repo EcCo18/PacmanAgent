@@ -14,6 +14,8 @@ import de.fh.stud.finalPacman.search.Search;
 import de.fh.stud.finalPacman.search.searchTypes.AStarSearch;
 import de.fh.stud.finalPacman.search.searchTypes.GhostSearch;
 
+import java.sql.SQLOutput;
+
 public class MyAgent_final extends PacmanAgent_2021 {
 
 	public MyAgent_final(String name) {
@@ -33,35 +35,27 @@ public class MyAgent_final extends PacmanAgent_2021 {
 	@Override
 	public PacmanAction action(PacmanPercept percept, PacmanActionEffect actionEffect) {
 
-		if(search == null)
-			search = new GhostSearch(percept.getView(), new Pacman(percept));
-
-		PacmanAction nextMove = PacmanAction.QUIT_GAME;
+		search.runRoundChecks(percept);
+		PacmanAction nextMove = PacmanAction.WAIT;
 
 		try {
-
-			search.runRoundChecks(percept);
 			nextMove = search.getNextMove();
-		} catch (NotFoundException ignored) {
-
-			try {
-				Coordinates nextDot = search.find(PacmanTileType.DOT);
-				search.calculateNextSteps(nextDot);
-				nextMove = search.getNextMove();
-			} catch (NotFoundException ignored2) { }
-		}
+		} catch (NotFoundException ignored) { }
 
 		return nextMove;
 	}
 
 	@Override
 	protected void onGameStart(PacmanStartInfo startInfo) {
-		System.out.println("Game started!");
+
+		PacmanPercept pacmanPercept = startInfo.getPercept();
+		search = new GhostSearch(pacmanPercept.getView(), new Pacman(pacmanPercept));
 	}
 
 	@Override
 	protected void onGameover(PacmanGameResult gameResult) {
-		System.out.println("Game over!");
+		System.out.println("Game Ended with Result: ");
+		gameResult.print();
 	}
 	
 }

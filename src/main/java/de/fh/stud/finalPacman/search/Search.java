@@ -4,7 +4,6 @@ import de.fh.pacman.PacmanPercept;
 import de.fh.pacman.enums.PacmanAction;
 import de.fh.pacman.enums.PacmanTileType;
 import de.fh.stud.finalPacman.Coordinates;
-import de.fh.stud.finalPacman.comparators.CompareCoordinatesByDepth;
 import de.fh.stud.finalPacman.comparators.IHeuristicComparator;
 import de.fh.stud.finalPacman.exceptions.NotFoundException;
 import de.fh.stud.finalPacman.exceptions.InvalidCoordinatesException;
@@ -49,7 +48,7 @@ public abstract class Search {
     public PacmanAction getNextMove() throws NotFoundException {
 
         if (savedMoves.isEmpty())
-            throw new NotFoundException();
+            calculateNextSteps(find(PacmanTileType.DOT));
 
         return savedMoves.pop();
     }
@@ -108,6 +107,32 @@ public abstract class Search {
         return fillMovesStack(currentCoordinates);
     }
 
+    public Coordinates findBestField () {
+
+        Coordinates bestCoordinates = new Coordinates(1,1);
+        distanceHeuristic = new DistanceHeuristic(pacman.getCurrentCoordinates());
+
+        double bestCoordinatesHeuristicValue = additionalHeuristic.getHeuristicValue(bestCoordinates) *200 + distanceHeuristic.getHeuristicValue(bestCoordinates);
+
+        for(int i = 1; i < currentWorld.length -2; i++) {
+
+            for(int p = 1; p < currentWorld[0].length -2; p++) {
+
+                Coordinates currentCoordinates = new Coordinates(i,p);
+                double heuristicValue = additionalHeuristic.getHeuristicValue(currentCoordinates);
+                double distanceHeuristicValue = distanceHeuristic.getHeuristicValue(currentCoordinates);
+
+                if(!isGhostAt(currentCoordinates) && !isWallAt(currentCoordinates) && bestCoordinatesHeuristicValue < (heuristicValue *20 + distanceHeuristicValue)) {
+
+                    bestCoordinates = currentCoordinates;
+                    bestCoordinatesHeuristicValue = heuristicValue;
+                }
+            }
+        }
+
+        return bestCoordinates;
+    }
+
     public Coordinates find(PacmanTileType tileType) throws NotFoundException {
 
         PriorityQueue<Coordinates> openList = new PriorityQueue<>(this.coordinatesComparator);
@@ -130,8 +155,11 @@ public abstract class Search {
                     openList.addAll(getNextCoordinates(currentCoordinates));
             }
         }
-        if(found)
+        if(found) {
+            //TODO remove Console Output
+            //System.out.println("Next Move To: " + currentCoordinates);
             return currentCoordinates;
+        }
         else
             throw new NotFoundException();
     }
@@ -154,16 +182,25 @@ public abstract class Search {
     public void runRoundChecks(PacmanPercept pacmanPercept) {
 
         this.pacman.setCurrentCoordinates(pacmanPercept);
-
         buildCurrentWorld(pacmanPercept);
 
         if(this.additionalHeuristic != null)
             additionalHeuristic.refresh();
 
-        if(this.ghostBusterClass != null) {
+        if(this.ghostBusterClass != null && ghostBusterClass.isGhostInRange()) {
 
-            if(ghostBusterClass.isGhostInRange())
-                this.savedMoves = new Stack<>();
+            double distanceToNearestGhost = ghostBusterClass.getClosestGhostInRange();
+
+            try {
+                if(distanceToNearestGhost < 1)
+                    calculateNextSteps(findBestField());
+                else
+                    calculateNextSteps(find(PacmanTileType.DOT));
+            } catch (NotFoundException ignored) {
+
+                savedMoves = new Stack<>();
+            }
+
         }
     }
 
@@ -201,7 +238,7 @@ public abstract class Search {
             default -> throw new InvalidCoordinatesException();
         }
 
-        if(isWallAt(resultCoordinates))
+        if(isWallAt(resultCoordinates) || isGhostAt(resultCoordinates))
             throw new InvalidCoordinatesException();
 
         return resultCoordinates;
