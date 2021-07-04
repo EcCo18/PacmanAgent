@@ -9,6 +9,7 @@ import de.fh.stud.finalPacman.exceptions.NotFoundException;
 import de.fh.stud.finalPacman.exceptions.InvalidCoordinatesException;
 import de.fh.stud.finalPacman.ghosts.GhostBusterClass;
 import de.fh.stud.finalPacman.pacman.Pacman;
+import de.fh.stud.finalPacman.search.heuristics.DeadEndHeuristic;
 import de.fh.stud.finalPacman.search.heuristics.DistanceHeuristic;
 
 import java.util.*;
@@ -79,8 +80,10 @@ public abstract class Search {
 
         Coordinates bestCoordinates = new Coordinates(1,1);
         distanceHeuristic = new DistanceHeuristic(pacman.getCurrentCoordinates());
+        DeadEndHeuristic deadEndHeuristic = new DeadEndHeuristic(currentWorld, pacman);
+        int heuristicFactor = 20;
 
-        double bestCoordinatesHeuristicValue = additionalHeuristic.getHeuristicValue(bestCoordinates) *200 + distanceHeuristic.getHeuristicValue(bestCoordinates);
+        double bestCoordinatesHeuristicValue = additionalHeuristic.getHeuristicValue(bestCoordinates) * heuristicFactor - distanceHeuristic.getHeuristicValue(bestCoordinates);
 
         for(int i = 1; i < currentWorld.length -2; i++) {
 
@@ -89,8 +92,11 @@ public abstract class Search {
                 Coordinates currentCoordinates = new Coordinates(i,p);
                 double heuristicValue = additionalHeuristic.getHeuristicValue(currentCoordinates);
                 double distanceHeuristicValue = distanceHeuristic.getHeuristicValue(currentCoordinates);
+                double deadEndHeuristicValue = deadEndHeuristic.getHeuristicValue(currentCoordinates);
 
-                if(!isGhostAt(currentCoordinates) && !isWallAt(currentCoordinates) && bestCoordinatesHeuristicValue < (heuristicValue *20 + distanceHeuristicValue)) {
+                double currentCoordinatesHeuristicValue = heuristicValue * heuristicFactor - distanceHeuristicValue - deadEndHeuristicValue * 50;
+
+                if(!isGhostAt(currentCoordinates) && !isWallAt(currentCoordinates) && bestCoordinatesHeuristicValue < currentCoordinatesHeuristicValue) {
 
                     bestCoordinates = currentCoordinates;
                     bestCoordinatesHeuristicValue = heuristicValue;
@@ -137,10 +143,9 @@ public abstract class Search {
             try {
                 if(distanceToNearestGhost < 1.5)
                     calculateNextSteps(findBestField());
-                else if (distanceToNearestGhost > 2.5)
-                    calculateNextSteps(find(PacmanTileType.DOT));
                 else
-                    calculateNextSteps(find(PacmanTileType.POWERPILL));
+                    calculateNextSteps(find(PacmanTileType.DOT));
+
             } catch (NotFoundException ignored) {
 
                 savedMoves = new Stack<>();
