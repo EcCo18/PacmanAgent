@@ -7,14 +7,10 @@ import de.fh.pacman.PacmanPercept;
 import de.fh.pacman.PacmanStartInfo;
 import de.fh.pacman.enums.PacmanAction;
 import de.fh.pacman.enums.PacmanActionEffect;
-import de.fh.pacman.enums.PacmanTileType;
 import de.fh.stud.finalPacman.exceptions.NotFoundException;
 import de.fh.stud.finalPacman.pacman.Pacman;
 import de.fh.stud.finalPacman.search.Search;
-import de.fh.stud.finalPacman.search.searchTypes.AStarSearch;
 import de.fh.stud.finalPacman.search.searchTypes.GhostSearch;
-
-import java.sql.SQLOutput;
 
 public class MyAgent_final extends PacmanAgent_2021 {
 
@@ -53,9 +49,6 @@ public class MyAgent_final extends PacmanAgent_2021 {
 	}
 
 	@Override
-	protected void onGameover(PacmanGameResult gameResult) {
-		System.out.println("Game Ended with Result: ");
-		gameResult.print();
-	}
+	protected void onGameover(PacmanGameResult gameResult) { }
 	
 }
