@@ -20,7 +20,7 @@ public class MyAgent_final extends PacmanAgent_2021 {
 	Search search = null;
 	
 	public static void main(String[] args) {
-		MyAgent_final agent = new MyAgent_final("MyAgent");
+		MyAgent_final agent = new MyAgent_final("HeapOverflow-Agent");
 		Agent.start(agent, "127.0.0.1", 5000);
 	}
 

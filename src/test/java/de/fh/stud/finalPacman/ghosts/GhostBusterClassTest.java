@@ -121,7 +121,7 @@ class GhostBusterClassTest {
     @Test
     public void shouldCalcLengthRightForSnapshot() {
 
-        assertEquals(2, ghostBusterClass.calcLengthRight());
+        assertEquals(3, ghostBusterClass.calcLengthRight());
     }
 
     @Test
@@ -153,7 +153,7 @@ class GhostBusterClassTest {
     @Test
     public void shouldCalcSnapshotWidth() {
 
-        assertEquals(4, ghostBusterClass.calcSnapSizeWidth(
+        assertEquals(5, ghostBusterClass.calcSnapSizeWidth(
                 ghostBusterClass.calcLengthLeft(), ghostBusterClass.calcLengthRight()
         ));
     }
@@ -161,7 +161,7 @@ class GhostBusterClassTest {
     @Test
     public void shouldCreateWorldSnapshot() {
 
-        PacmanTileType[][] expectedSnapshot = new PacmanTileType[4][4];
+        PacmanTileType[][] expectedSnapshot = new PacmanTileType[5][4];
         //set up world
         //first line walls y=0 - - - -
         expectedSnapshot[0][0] = PacmanTileType.WALL;
@@ -200,6 +200,15 @@ class GhostBusterClassTest {
         expectedSnapshot[1][2] = PacmanTileType.DOT;
         expectedSnapshot[2][2] = PacmanTileType.DOT;
         expectedSnapshot[3][2] = PacmanTileType.GHOST;
+        //third lane walls x=4
+        //-       -
+        //-       -
+        //-       -
+        //- - - - -
+        expectedSnapshot[4][0] = PacmanTileType.WALL;
+        expectedSnapshot[4][1] = PacmanTileType.WALL;
+        expectedSnapshot[4][2] = PacmanTileType.WALL;
+        expectedSnapshot[4][3] = PacmanTileType.WALL;
 
         // Util.printView(expectedSnapshot);
 

@@ -21,8 +21,8 @@ public class CompareCoordinatesWithGhostHeuristic implements IHeuristicComparato
         int lhsGhostHeuristic = (int) Math.floor(ghostHeuristic.getHeuristicValue(lhs)) * (-1);
         int rhsGhostHeuristic = (int) Math.floor(ghostHeuristic.getHeuristicValue(rhs)) * (-1);
 
-        int lhsValue = lhsDepth + lhsGhostHeuristic * 180;
-        int rhsValue = rhsDepth + rhsGhostHeuristic * 180;
+        int lhsValue = lhsDepth + lhsGhostHeuristic * 8;
+        int rhsValue = rhsDepth + rhsGhostHeuristic * 8;
 
         return lhsValue - rhsValue;
     }

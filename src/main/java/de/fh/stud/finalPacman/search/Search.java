@@ -79,9 +79,10 @@ public abstract class Search {
     public Coordinates findBestField () {
 
         Coordinates bestCoordinates = new Coordinates(1,1);
-        distanceHeuristic = new DistanceHeuristic(pacman.getCurrentCoordinates());
         DeadEndHeuristic deadEndHeuristic = new DeadEndHeuristic(currentWorld, pacman);
-        int heuristicFactor = 20;
+
+        //TODO values 8
+        int heuristicFactor = 8;
 
         double bestCoordinatesHeuristicValue = additionalHeuristic.getHeuristicValue(bestCoordinates) * heuristicFactor - distanceHeuristic.getHeuristicValue(bestCoordinates);
 
@@ -92,7 +93,8 @@ public abstract class Search {
                 Coordinates currentCoordinates = new Coordinates(i,p);
                 double heuristicValue = additionalHeuristic.getHeuristicValue(currentCoordinates);
                 double distanceHeuristicValue = distanceHeuristic.getHeuristicValue(currentCoordinates);
-                double deadEndHeuristicValue = deadEndHeuristic.getHeuristicValue(currentCoordinates) * 30;
+                //TODO values 8,10
+                double deadEndHeuristicValue = deadEndHeuristic.getHeuristicValue(currentCoordinates) * heuristicFactor * 8;
 
                 double currentCoordinatesHeuristicValue = heuristicValue * heuristicFactor - distanceHeuristicValue - deadEndHeuristicValue;
 
@@ -132,6 +134,8 @@ public abstract class Search {
 
         this.pacman.setCurrentCoordinates(pacmanPercept);
         buildCurrentWorld(pacmanPercept);
+
+        distanceHeuristic = new DistanceHeuristic(pacman.getCurrentCoordinates());
 
         if(this.additionalHeuristic != null)
             additionalHeuristic.refresh();

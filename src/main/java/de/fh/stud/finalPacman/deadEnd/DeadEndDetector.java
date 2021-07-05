@@ -43,7 +43,7 @@ public class DeadEndDetector {
         else if(nextPossibleSteps.size() == 0) {
 
             resetClosedList();
-            System.out.println("--> found dead end");
+            // System.out.println("--> found dead end");
             return new DeadEndReport(iteration - 1, DeadEndType.DEAD_END);
         }
         // go deeper in tunnel
