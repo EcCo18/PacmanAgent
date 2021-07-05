@@ -42,18 +42,18 @@ public class MyAgent_P3 extends PacmanAgent_2021 {
 			Suche ucs = new Suche(new Node(percept.getView(), new Coordinates(percept.getPosX(), percept.getPosY())), "ucs");
 			Suche aStar = new Suche(new Node(percept.getView(), new Coordinates(percept.getPosX(), percept.getPosY())), "as");
 
-			/*try
+			try
 			{
-				loesungsNode = deep.start();
+				loesungsNode = aStar.start();
 				loesungsNode.getWalkedPath().remove(0);
 			} catch (Exception e)
 			{
 				e.printStackTrace();
-			}*/
+			}
 
 			//Effiziente Abarbeitung der Tabellde
 
-			try
+			/*try
 			{
 				System.out.println("Deep ---");
 				loesungsNode = deep.start();
@@ -68,7 +68,7 @@ public class MyAgent_P3 extends PacmanAgent_2021 {
 			} catch (Exception e)
 			{
 				e.printStackTrace();
-			}
+			}*/
 		}
 		
 		//Wenn die Suche eine Lösung gefunden hat, dann ermittle die als nächstes auszuführende Aktion

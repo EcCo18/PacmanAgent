@@ -150,7 +150,7 @@ public class Node implements Comparable<Node>
         if (o == null || getClass() != o.getClass()) return false;
         Node node = (Node) o;
         // return node.hashCode() == this.hashCode();
-        return Arrays.deepEquals(currentWorld, node.currentWorld) && pacPos.equals(node.pacPos);
+        return pacPos.equals(node.pacPos) && Arrays.deepEquals(currentWorld, node.currentWorld) ;
     }
 
     @Override
